@@ -9,7 +9,7 @@ import Spinner from "./spinner/Spinner";
 import MovieCard from "./movieCard/MovieCard";
 
 const Search_Result = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState("");
   const [loading, setLoading] = useState(false);
   const [pageNum, setPageNum] = useState(1);
   const { query } = useParams();
@@ -30,6 +30,7 @@ const Search_Result = () => {
     FetchDataFromApi(`/search/multi?query=${query}&page=${pageNum}`).then(
       (res) => {
         if (data?.results) {
+          console.log(res);
           setData({
             ...data,
             results: [...data?.results, ...res.results],
@@ -44,20 +45,20 @@ const Search_Result = () => {
   };
 
   useEffect(() => {
-    // setPageNum(1);
+    setPageNum(1);
     fetchInitialData();
   }, [query]);
 
   return (
-    <div className="searchResultPage">
+    <div className="searchResultsPage">
       {loading && <Spinner initial={true} />}
       {!loading && (
         <ContentWrapper>
-          {data?.results?.lenght > 0 ? (
+          {data?.results ? (
             <>
               <div className="pageTitle">
                 {`Search ${
-                  data?.total_results > 0 ? "results" : "result"
+                  data?.total_results > 1 ? "results" : "result"
                 } of '${query}'`}
               </div>
               <InfiniteScroll
@@ -67,7 +68,7 @@ const Search_Result = () => {
                 hasMore={pageNum <= data?.total_pages}
                 loader={<Spinner />}
               >
-                {data?.results.map((item, index) => {
+                {data?.results?.map((item, index) => {
                   if (item.media_type === "person") return;
                   return (
                     <MovieCard key={index} data={item} fromSearch={true} />

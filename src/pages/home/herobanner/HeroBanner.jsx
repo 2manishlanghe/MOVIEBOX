@@ -22,7 +22,6 @@ const HeroBanner = () => {
   }, [data]);
 
   const searchQueryHandler = (event) => {
-    console.log(event.key);
     if (query.length > 0 && event.key === "Enter") {
       navigate(`/search/${query}`);
     }
